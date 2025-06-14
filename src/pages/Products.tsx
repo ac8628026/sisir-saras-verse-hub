@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ZoomIn, Store, X } from 'lucide-react';
+import { ArrowLeft, Store, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getProducts, categories, type Product } from '../services/productService';
-import { ProductGrid } from '../components/products/ProductGrid';
-import { CategoryButtons } from '../components/products/CategoryButtons';
 
 export const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);

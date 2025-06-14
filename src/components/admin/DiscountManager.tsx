@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { Plus, X, Edit2, Check } from 'lucide-react';
 
 interface Discount {

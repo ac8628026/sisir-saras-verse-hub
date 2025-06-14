@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Plus, X, Edit2, Check } from 'lucide-react';
 import { getExhibitionPhotos, saveExhibitionPhoto, deleteExhibitionPhoto, updateExhibitionPhoto, type ExhibitionPhoto } from '../../services/exhibitionService';
 

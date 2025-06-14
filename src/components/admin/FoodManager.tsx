@@ -130,6 +130,8 @@ export const FoodManager = () => {
     <div>
       <h2 className="text-xl font-semibold mb-4">Manage Foods</h2>
       
+      
+      
       <div className="grid gap-4 mb-6">
         <input
           type="text"
@@ -204,6 +206,7 @@ export const FoodManager = () => {
           <div key={food.id} className="flex items-start justify-between p-4 border rounded-lg">
             {editingId === food.id ? (
               <div className="flex-1 grid gap-4">
+                
                 <input
                   type="text"
                   value={editForm.name}

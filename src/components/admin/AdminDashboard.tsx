@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Tabs } from '../common/Tabs';
 import { ProductManager } from './ProductManager';
 import { ScheduleManager } from './ScheduleManager';
