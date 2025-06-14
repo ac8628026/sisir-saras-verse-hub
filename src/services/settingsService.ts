@@ -1,40 +1,49 @@
+
 import { db } from '../firebase/config';
-import { collection, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export interface ExhibitionSettings {
-  title: string;
-  subtitle?: string;
-  year: string;
-  welcomeText: string;
-  headerColor: string;
-  headerSize: 'text-2xl' | 'text-3xl' | 'text-4xl' | 'text-5xl';
   marqueeMessages: string[];
-  marqueeSpeed?: number;
-  marqueeColor?: string;
+  marqueeColor: string;
+  marqueeSpeed: number;
+  welcomeMessage: string;
+  contactInfo: {
+    phone: string;
+    email: string;
+    address: string;
+  };
 }
 
-const settingsDoc = doc(db, 'settings', 'exhibition');
-
-export const getExhibitionSettings = async (): Promise<ExhibitionSettings> => {
-  const docSnap = await getDoc(settingsDoc);
-  if (docSnap.exists()) {
-    return docSnap.data() as ExhibitionSettings;
+const defaultSettings: ExhibitionSettings = {
+  marqueeMessages: ['Welcome to Odisha Tribal Exhibition 2024!'],
+  marqueeColor: '#1e40af',
+  marqueeSpeed: 5,
+  welcomeMessage: 'Discover the rich heritage of Odisha tribal culture',
+  contactInfo: {
+    phone: '+91-1234567890',
+    email: 'info@exhibition.com',
+    address: '123 Exhibition Center, Bhubaneswar'
   }
-  // Default settings
-  return {
-    title: 'Gonasika Kendujhar Mahotsaav',
-    subtitle: 'and Regional Saras',
-    year: '2024',
-    welcomeText: 'Welcome to the Exhibition',
-    headerColor: '#1e40af',
-    headerSize: 'text-3xl',
-    marqueeMessages: ['🎉 Please fill the Visitor Feedback form and win assured discount at choice of ORMAS store!', '🎁 Get a chance to win a bumper prize at lucky draw!'],
-    marqueeSpeed: 30,
-    marqueeColor: '#1e40af' // navy blue
-  };
 };
 
-export const updateExhibitionSettings = async (settings: ExhibitionSettings) => {
-  await setDoc(settingsDoc, settings);
-  return settings;
-}; 
+export const getExhibitionSettings = async (): Promise<ExhibitionSettings> => {
+  try {
+    const settingsDoc = await getDoc(doc(db, 'settings', 'exhibition'));
+    if (settingsDoc.exists()) {
+      return settingsDoc.data() as ExhibitionSettings;
+    }
+    return defaultSettings;
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    return defaultSettings;
+  }
+};
+
+export const updateExhibitionSettings = async (settings: ExhibitionSettings): Promise<void> => {
+  try {
+    await setDoc(doc(db, 'settings', 'exhibition'), settings);
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    throw error;
+  }
+};

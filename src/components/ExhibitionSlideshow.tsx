@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getExhibitionPhotos, type ExhibitionPhoto } from '../services/exhibitionService';
 
@@ -8,7 +9,6 @@ export const ExhibitionSlideshow = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -92,8 +92,6 @@ export const ExhibitionSlideshow = () => {
   return (
     <div 
       className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] mb-8"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

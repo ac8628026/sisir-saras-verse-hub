@@ -1,5 +1,11 @@
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+
 import { db } from '../firebase/config';
+import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+
+export interface FeedbackResponse {
+  question: string;
+  answer: string;
+}
 
 export interface FeedbackEntry {
   id: string;
@@ -10,58 +16,41 @@ export interface FeedbackEntry {
   mobile: string;
   location: string;
   areaOfInterest: string;
-  responses: Array<{
-    question: string;
-    answer: string;
-  }>;
+  responses: FeedbackResponse[];
   additionalFeedback?: string;
   discountCode?: string;
   assignedStall?: string;
 }
 
-const feedbackCollection = collection(db, 'feedback');
-
-export const saveFeedback = async (feedbackData: Omit<FeedbackEntry, 'id' | 'timestamp' | 'discountCode' | 'assignedStall'>) => {
-  const newEntry = {
-    ...feedbackData,
-    timestamp: new Date().toISOString(),
-    discountCode: generateDiscountCode(feedbackData.areaOfInterest),
-    assignedStall: assignStall(feedbackData.areaOfInterest)
-  };
-
-  const docRef = await addDoc(feedbackCollection, newEntry);
-  return {
-    id: docRef.id,
-    ...newEntry
-  };
+export const submitFeedback = async (feedbackData: Omit<FeedbackEntry, 'id' | 'timestamp'>): Promise<string> => {
+  try {
+    const docRef = await addDoc(collection(db, 'feedback'), {
+      ...feedbackData,
+      timestamp: new Date().toISOString()
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    throw error;
+  }
 };
 
 export const getFeedbackData = async (): Promise<FeedbackEntry[]> => {
-  const snapshot = await getDocs(feedbackCollection);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  } as FeedbackEntry));
+  try {
+    const q = query(collection(db, 'feedback'), orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as FeedbackEntry));
+  } catch (error) {
+    console.error('Error fetching feedback data:', error);
+    throw error;
+  }
 };
 
-const generateDiscountCode = (category: string): string => {
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `ORMAS-${random}-15`;
-};
-
-const assignStall = (category: string): string => {
-  const stallRanges: { [key: string]: [number, number] } = {
-    'Handloom': [1, 10],
-    'Handicraft': [11, 20],
-    'Minor Forest Products (MFP)': [21, 25],
-    'Food & Spices': [26, 30],
-    'Home Furnishing': [31, 35],
-    'Woolen Knit Wear': [36, 40],
-    'Leather Products': [41, 45],
-    'Jewellery': [46, 50]
-  };
-
-  const range = stallRanges[category] || [1, 50];
-  const stallNumber = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
-  return `Stall ${stallNumber}`;
+export const generateDiscountCode = (stallNumbers: string[]): { code: string; stall: string } => {
+  const stall = stallNumbers[Math.floor(Math.random() * stallNumbers.length)];
+  const code = `DISC${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+  return { code, stall };
 };

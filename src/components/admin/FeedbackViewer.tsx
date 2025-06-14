@@ -33,7 +33,7 @@ export const FeedbackViewer = () => {
 
   const handleSort = (key: keyof FeedbackEntry) => {
     let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+    if (sortConfig?.key === key && sortConfig?.direction === 'asc') {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
@@ -142,8 +142,8 @@ export const FeedbackViewer = () => {
           </thead>
           <tbody>
             {feedbackData.map((entry) => (
-              <>
-                <tr key={entry.id} className="hover:bg-gray-50">
+              <React.Fragment key={entry.id}>
+                <tr className="hover:bg-gray-50">
                   <td className="px-4 py-2 border-b">{formatDate(entry.timestamp)}</td>
                   <td className="px-4 py-2 border-b">{entry.name}</td>
                   <td className="px-4 py-2 border-b">{entry.location}</td>
@@ -158,7 +158,7 @@ export const FeedbackViewer = () => {
                   </td>
                 </tr>
                 {expandedRow === entry.id && (
-                  <tr key={`${entry.id}-expanded`}>
+                  <tr>
                     <td colSpan={5} className="px-4 py-4 bg-gray-50">
                       <div className="grid gap-4">
                         <div className="grid grid-cols-2 gap-4">
@@ -195,7 +195,7 @@ export const FeedbackViewer = () => {
                     </td>
                   </tr>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
