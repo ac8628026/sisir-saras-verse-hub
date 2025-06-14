@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Utensils, MapPin, Star, Heart, Clock, Filter } from 'lucide-react';
@@ -313,6 +314,7 @@ export const Foods = () => {
             Clear Filters
           </button>
         </motion.div>
+      )}
 
       {/* Special Banner */}
       <motion.div
