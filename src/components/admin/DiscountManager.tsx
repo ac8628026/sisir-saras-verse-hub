@@ -42,7 +42,7 @@ export const DiscountManager = () => {
     return rangeFormat.test(range) || commaFormat.test(range);
   };
 
-  const generateDiscountCode = (category: string, percentage: number) => {
+  const generateDiscountCode = (categoryName: string, percentage: number) => {
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     return `ORMAS-${random}-${percentage}`;
   };
