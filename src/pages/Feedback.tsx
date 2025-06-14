@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, ArrowLeft, Gift } from 'lucide-react';
+import { MessageSquare, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { saveFeedback } from '../services/feedbackService';
+import { submitFeedback } from '../services/feedbackService';
 import { districts, areasOfInterest, surveyQuestions } from '../constants/feedbackConstants';
 
 export const Feedback = () => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [submittedData, setSubmittedData] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     gender: '',
@@ -19,9 +18,8 @@ export const Feedback = () => {
     additionalFeedback: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const responses = surveyQuestions.map((question, index) => ({
       question,
       answer: (document.querySelector(`input[name="question-${index}"]:checked`) as HTMLInputElement)?.value || ''
@@ -32,9 +30,12 @@ export const Feedback = () => {
       responses
     };
 
-    const savedFeedback = saveFeedback(feedbackData);
-    setSubmittedData(savedFeedback);
-    setFeedbackSubmitted(true);
+    try {
+      await submitFeedback(feedbackData as any); // Fix: use submitFeedback and cast if needed
+      setFeedbackSubmitted(true);
+    } catch (err) {
+      // Optionally: display error message
+    }
   };
 
   if (feedbackSubmitted) {

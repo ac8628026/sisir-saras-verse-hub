@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, X, Edit2, Check } from 'lucide-react';
 import { getFoods, saveFood, updateFood, deleteFood, type Food } from '../../services/foodService';
 

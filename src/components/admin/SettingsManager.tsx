@@ -1,18 +1,19 @@
+
 import React, { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import { getExhibitionSettings, updateExhibitionSettings, type ExhibitionSettings } from '../../services/settingsService';
 
 export const SettingsManager = () => {
   const [settings, setSettings] = useState<ExhibitionSettings>({
-    title: '',
-    subtitle: '',
-    year: '',
     marqueeMessages: [''],
-    marqueeSpeed: 30,
+    marqueeSpeed: 5,
     marqueeColor: '#1e40af',
-    welcomeText: '',
-    headerColor: '',
-    headerSize: 'text-3xl'
+    welcomeMessage: '',
+    contactInfo: {
+      phone: '',
+      email: '',
+      address: ''
+    }
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +73,16 @@ export const SettingsManager = () => {
     });
   };
 
+  const updateContactInfo = (field: keyof ExhibitionSettings['contactInfo'], value: string) => {
+    setSettings({
+      ...settings,
+      contactInfo: {
+        ...settings.contactInfo,
+        [field]: value
+      }
+    });
+  };
+
   if (loading) return <div className="text-center py-4">Loading settings...</div>;
 
   return (
@@ -79,54 +90,16 @@ export const SettingsManager = () => {
       <div>
         <h2 className="text-xl font-semibold mb-4">Exhibition Settings</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Exhibition Title
+                Welcome Message
               </label>
               <input
                 type="text"
-                value={settings.title}
-                onChange={(e) => setSettings({ ...settings, title: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg"
-                placeholder="Exhibition Title"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Subtitle (optional)
-              </label>
-              <input
-                type="text"
-                value={settings.subtitle}
-                onChange={(e) => setSettings({ ...settings, subtitle: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg"
-                placeholder="Subtitle"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Year
-              </label>
-              <input
-                type="text"
-                value={settings.year}
-                onChange={(e) => setSettings({ ...settings, year: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg"
-                placeholder="Year"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Welcome Text
-              </label>
-              <input
-                type="text"
-                value={settings.welcomeText}
-                onChange={(e) => setSettings({ ...settings, welcomeText: e.target.value })}
+                value={settings.welcomeMessage}
+                onChange={(e) => setSettings({ ...settings, welcomeMessage: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg"
                 placeholder="Welcome message"
               />
@@ -134,36 +107,44 @@ export const SettingsManager = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Header Color
+                Contact Phone
               </label>
               <input
-                type="color"
-                value={settings.headerColor}
-                onChange={(e) => setSettings({ ...settings, headerColor: e.target.value })}
-                className="w-full h-10 px-1 py-1 border rounded-lg"
+                type="text"
+                value={settings.contactInfo.phone}
+                onChange={(e) => updateContactInfo('phone', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="Phone"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Header Size
+                Contact Email
               </label>
-              <select
-                value={settings.headerSize}
-                onChange={(e) => setSettings({ ...settings, headerSize: e.target.value as any })}
+              <input
+                type="email"
+                value={settings.contactInfo.email}
+                onChange={(e) => updateContactInfo('email', e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg"
-              >
-                <option value="text-2xl">Small</option>
-                <option value="text-3xl">Medium</option>
-                <option value="text-4xl">Large</option>
-                <option value="text-5xl">Extra Large</option>
-              </select>
+                placeholder="Email"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Address
+              </label>
+              <input
+                type="text"
+                value={settings.contactInfo.address}
+                onChange={(e) => updateContactInfo('address', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="Address"
+              />
             </div>
           </div>
 
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Marquee Settings</h3>
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Marquee Speed (1 = fastest, 10 = slowest)
@@ -181,7 +162,6 @@ export const SettingsManager = () => {
                 Current speed: {settings.marqueeSpeed}
               </div>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Banner Color
@@ -193,7 +173,6 @@ export const SettingsManager = () => {
                 className="w-full h-10 px-1 py-1 border rounded-lg"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Marquee Messages
@@ -242,4 +221,4 @@ export const SettingsManager = () => {
       </div>
     </div>
   );
-}; 
+};

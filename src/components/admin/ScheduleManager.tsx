@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, X, Edit2, Check } from 'lucide-react';
 import { getEvents, saveEvent, updateEvent, deleteEvent, type Event } from '../../services/scheduleService';
 

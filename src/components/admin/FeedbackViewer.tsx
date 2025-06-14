@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, ChevronDown, ChevronUp } from 'lucide-react';
 import { getFeedbackData, type FeedbackEntry } from '../../services/feedbackService';
 import { surveyQuestions } from '../../constants/feedbackConstants';
@@ -33,14 +32,14 @@ export const FeedbackViewer = () => {
 
   const handleSort = (key: keyof FeedbackEntry) => {
     let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig?.key === key && sortConfig?.direction === 'asc') {
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
 
     const sortedData = [...feedbackData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      if ((a[key] ?? '') < (b[key] ?? '')) return direction === 'asc' ? -1 : 1;
+      if ((a[key] ?? '') > (b[key] ?? '')) return direction === 'asc' ? 1 : -1;
       return 0;
     });
     setFeedbackData(sortedData);
