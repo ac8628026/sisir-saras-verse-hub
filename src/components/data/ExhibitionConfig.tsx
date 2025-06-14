@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, addDoc, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { Plus, Activity, Package, DollarSign } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
@@ -235,4 +235,4 @@ export const ExhibitionConfig = () => {
       </div>
     </div>
   );
-}; 
+};

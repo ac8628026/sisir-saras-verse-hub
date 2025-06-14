@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExhibitionConfig } from '../components/data/ExhibitionConfig';
 import { ParticipantRegistration } from '../components/data/ParticipantRegistration';
@@ -86,4 +86,4 @@ export const Data = () => {
       </div>
     </div>
   );
-}; 
+};

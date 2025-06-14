@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Lock, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { PasswordGate } from '../components/admin/PasswordGate';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { db } from '../../firebase/config';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { Camera, Plus, X, User, Phone, Package, RotateCw } from 'lucide-react';
+import { Camera, Plus, X, RotateCw } from 'lucide-react';
 import productCategories from '../../data/Product Category.json';
 import odishaMapping from '../../data/odisha_mapping.json';
 import { indianStates, unionTerritories } from '../../constants/locationConstants';
@@ -42,21 +42,6 @@ interface Registration {
   documents: string[];
   participants: Participant[];
   inventory: InventoryItem[];
-}
-
-interface VillageMapping {
-  data: {
-    states: Array<{
-      name: string;
-      districts: Array<{
-        name: string;
-        blocks: Array<{
-          name: string;
-          gramPanchayats: string[];
-        }>;
-      }>;
-    }>;
-  };
 }
 
 const initialRegistration: Registration = {
@@ -312,7 +297,7 @@ export const ParticipantRegistration = () => {
 
     setLoading(true);
     try {
-      const docRef = await addDoc(collection(db, 'registrations'), registration);
+      await addDoc(collection(db, 'registrations'), registration);
       setSuccess(true);
       // Reset form after successful submission
       setRegistration(initialRegistration);
@@ -1068,4 +1053,4 @@ export const ParticipantRegistration = () => {
       </form>
     </div>
   );
-}; 
+};
