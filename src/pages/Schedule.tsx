@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Users, Filter, CalendarDays, Star } from 'lucide-react';
 import { Layout } from '../components/common/Layout';
-import { getScheduleEvents, type ScheduleEvent } from '../services/scheduleService';
+import { getEvents, type Event } from '../services/scheduleService';
 
 export const Schedule = () => {
-  const [events, setEvents] = useState<ScheduleEvent[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ export const Schedule = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const fetchedEvents = await getScheduleEvents();
+        const fetchedEvents = await getEvents();
         setEvents(fetchedEvents);
         setFilteredEvents(fetchedEvents);
       } catch (error) {
@@ -35,7 +35,7 @@ export const Schedule = () => {
     }
 
     if (selectedCategory !== 'All') {
-      filtered = filtered.filter(event => event.category === selectedCategory);
+      filtered = filtered.filter(event => event.venue.includes(selectedCategory));
     }
 
     setFilteredEvents(filtered);
@@ -45,7 +45,7 @@ export const Schedule = () => {
     filterEvents();
   }, [selectedDate, selectedCategory, events]);
 
-  const categories = ['All', ...new Set(events.map(event => event.category))];
+  const categories = ['All', 'Main Hall', 'Conference Room', 'Workshop Area', 'Exhibition Hall'];
 
   if (loading) {
     return (
@@ -112,13 +112,6 @@ export const Schedule = () => {
             className="group bg-white dark:bg-dark-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-dark-700"
           >
             <div className="relative p-6">
-              {/* Category Badge */}
-              <div className="absolute top-4 right-4">
-                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium rounded-full">
-                  {event.category}
-                </span>
-              </div>
-
               {/* Event Icon */}
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-white" />
@@ -126,7 +119,7 @@ export const Schedule = () => {
 
               {/* Event Details */}
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
-                {event.title}
+                {event.name}
               </h3>
               
               <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
@@ -142,15 +135,8 @@ export const Schedule = () => {
                 
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <MapPin className="w-4 h-4" />
-                  <span>{event.location}</span>
+                  <span>{event.venue}</span>
                 </div>
-                
-                {event.capacity && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <Users className="w-4 h-4" />
-                    <span>Capacity: {event.capacity}</span>
-                  </div>
-                )}
               </div>
 
               {/* Action Button */}

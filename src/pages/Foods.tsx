@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Utensils, MapPin, Star, Heart, Clock, Filter } from 'lucide-react';
@@ -90,14 +89,7 @@ export const Foods = () => {
     let filtered = [...foods];
 
     if (selectedCategory !== 'All') {
-      filtered = filtered.filter(food => {
-        if (selectedCategory === 'Traditional' && food.category === 'Traditional') return true;
-        if (selectedCategory === 'Sweets' && food.category === 'Sweets') return true;
-        if (selectedCategory === 'Snacks' && food.category === 'Snacks') return true;
-        if (selectedCategory === 'Beverages' && food.category === 'Beverages') return true;
-        if (selectedCategory === 'Main Course' && food.category === 'Main Course') return true;
-        return false;
-      });
+      filtered = filtered.filter(food => food.name.toLowerCase().includes(selectedCategory.toLowerCase()));
     }
 
     if (priceRange !== 'All') {
