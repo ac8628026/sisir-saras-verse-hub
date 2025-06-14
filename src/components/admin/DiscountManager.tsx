@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Plus, X, Edit2, Check } from 'lucide-react';
 
@@ -42,7 +41,7 @@ export const DiscountManager = () => {
     return rangeFormat.test(range) || commaFormat.test(range);
   };
 
-  const generateDiscountCode = (categoryName: string, percentage: number) => {
+  const generateDiscountCode = (percentage: number) => {
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     return `ORMAS-${random}-${percentage}`;
   };
@@ -55,7 +54,7 @@ export const DiscountManager = () => {
       validateStallRange(newDiscount.stallRange)
     ) {
       const percentage = Number(newDiscount.percentage);
-      const code = generateDiscountCode(newDiscount.category, percentage);
+      const code = generateDiscountCode(percentage);
       
       setDiscounts([
         ...discounts,
@@ -87,7 +86,7 @@ export const DiscountManager = () => {
       validateStallRange(editForm.stallRange)
     ) {
       const percentage = Number(editForm.percentage);
-      const code = generateDiscountCode(editForm.category, percentage);
+      const code = generateDiscountCode(percentage);
       
       setDiscounts(discounts.map(discount => 
         discount.id === id ? {
