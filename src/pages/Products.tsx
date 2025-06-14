@@ -154,7 +154,6 @@ export const Products = () => {
       {/* Category Filter */}
       <CategoryButtons
         selectedCategory={selectedCategory}
-        products={products}
         onCategoryChange={setSelectedCategory}
       />
 
@@ -163,7 +162,7 @@ export const Products = () => {
         products={filteredProducts.map(product => ({
           id: product.id,
           name: product.name,
-          description: product.subCategory || 'Traditional product from Odisha',
+          description: 'Traditional product from Odisha',
           price: '₹299',
           imageUrl: product.images?.[0] || '/api/placeholder/300/300',
           category: product.category

@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Users, Package, Calendar, TrendingUp, DollarSign } from 'lucide-react';
+import { Users, Package, Calendar, TrendingUp, DollarSign } from 'lucide-react';
 import { Layout } from '../components/common/Layout';
 import { Tabs } from '../components/common/Tabs';
 import { DailySales } from '../components/data/DailySales';
@@ -16,25 +17,25 @@ export const Data = () => {
       id: 'sales', 
       label: 'Daily Sales', 
       icon: DollarSign,
-      component: <DailySales />
+      component: DailySales
     },
     { 
       id: 'registration', 
       label: 'Registration', 
       icon: Users,
-      component: <ParticipantRegistration />
+      component: ParticipantRegistration
     },
     { 
       id: 'registrations', 
       label: 'View Registrations', 
       icon: Package,
-      component: <RegistrationViewer />
+      component: RegistrationViewer
     },
     { 
       id: 'config', 
       label: 'Exhibition Config', 
       icon: Calendar,
-      component: <ExhibitionConfig />
+      component: ExhibitionConfig
     }
   ];
 

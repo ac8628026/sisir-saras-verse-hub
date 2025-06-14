@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Users, Filter, CalendarDays, Star } from 'lucide-react';
+import { Calendar, Clock, MapPin, Filter, CalendarDays, Star } from 'lucide-react';
 import { Layout } from '../components/common/Layout';
 import { getEvents, type Event } from '../services/scheduleService';
 

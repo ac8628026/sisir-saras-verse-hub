@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, Star, Send, User, Mail, Phone, MapPin, Heart } from 'lucide-react';
 import { Layout } from '../components/common/Layout';
-import { saveFeedback } from '../services/feedbackService';
+import { submitFeedback } from '../services/feedbackService';
 
 export const Feedback = () => {
   const [formData, setFormData] = useState({
@@ -24,13 +23,12 @@ export const Feedback = () => {
     setLoading(true);
     
     try {
-      await saveFeedback({
+      await submitFeedback({
         ...formData,
-        responses: {
-          ...formData.responses,
-          rating: rating.toString(),
-          message: formData.responses.message || ''
-        }
+        responses: [
+          { question: 'Overall Rating', answer: rating.toString() },
+          { question: 'Message', answer: formData.responses.message || '' }
+        ]
       });
       setSubmitted(true);
     } catch (error) {

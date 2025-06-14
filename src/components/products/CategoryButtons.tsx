@@ -1,18 +1,19 @@
+
 import { motion } from 'framer-motion';
+import { categories } from '../../services/productService';
 
 interface CategoryButtonsProps {
-  categories: string[];
   selectedCategory: string;
-  onSelectCategory: (category: string) => void;
+  onCategoryChange: (category: string) => void;
 }
 
 export const CategoryButtons = ({ 
-  categories, 
   selectedCategory, 
-  onSelectCategory 
+  onCategoryChange 
 }: CategoryButtonsProps) => {
-  const firstRowCategories = categories.slice(0, 4);
-  const secondRowCategories = categories.slice(4);
+  const allCategories = ['All', ...categories];
+  const firstRowCategories = allCategories.slice(0, 4);
+  const secondRowCategories = allCategories.slice(4);
 
   return (
     <div className="grid grid-rows-2 gap-4 mb-8">
@@ -20,7 +21,7 @@ export const CategoryButtons = ({
         {firstRowCategories.map((category) => (
           <motion.button
             key={category}
-            onClick={() => onSelectCategory(category)}
+            onClick={() => onCategoryChange(category)}
             className={`px-4 py-2 rounded-lg text-center transition-all ${
               selectedCategory === category
                 ? 'bg-orange-600 text-white shadow-lg'
@@ -37,7 +38,7 @@ export const CategoryButtons = ({
         {secondRowCategories.map((category) => (
           <motion.button
             key={category}
-            onClick={() => onSelectCategory(category)}
+            onClick={() => onCategoryChange(category)}
             className={`px-4 py-2 rounded-lg text-center transition-all ${
               selectedCategory === category
                 ? 'bg-orange-600 text-white shadow-lg'
