@@ -1,208 +1,248 @@
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MessageSquare, Star, Send, Heart, ThumbsUp, Award, CheckCircle } from 'lucide-react';
+import { Layout } from '../components/common/Layout';
 import { submitFeedback } from '../services/feedbackService';
-import { districts, areasOfInterest, surveyQuestions } from '../constants/feedbackConstants';
 
 export const Feedback = () => {
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    gender: '',
     email: '',
-    mobile: '',
-    location: '',
-    areaOfInterest: '',
-    responses: [] as Array<{ question: string; answer: string }>,
-    additionalFeedback: ''
+    rating: 5,
+    category: 'general',
+    message: '',
+    phone: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const responses = surveyQuestions.map((question, index) => ({
-      question,
-      answer: (document.querySelector(`input[name="question-${index}"]:checked`) as HTMLInputElement)?.value || ''
-    }));
-
-    const feedbackData = {
-      ...formData,
-      responses
-    };
-
+    setIsSubmitting(true);
+    
     try {
-      await submitFeedback(feedbackData as any); // Fix: use submitFeedback and cast if needed
-      setFeedbackSubmitted(true);
-    } catch (err) {
-      // Optionally: display error message
+      await submitFeedback(formData);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (feedbackSubmitted) {
+  const categories = [
+    { value: 'general', label: 'General Experience', icon: Heart },
+    { value: 'products', label: 'Products', icon: Award },
+    { value: 'events', label: 'Events & Programs', icon: Star },
+    { value: 'food', label: 'Food & Cuisine', icon: ThumbsUp },
+    { value: 'suggestions', label: 'Suggestions', icon: MessageSquare }
+  ];
+
+  if (isSubmitted) {
     return (
-      <motion.div 
-        className="min-h-screen bg-gradient-to-b from-navy-50 to-navy-100 p-4 flex items-center justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <div className="bg-white rounded-xl p-8 shadow-lg text-center max-w-md w-full">
-          <MessageSquare className="w-16 h-16 text-navy-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-navy-800 mb-4">Thank You!</h2>
-          <p className="text-navy-600 mb-6">
-            Your feedback is valuable to us and will help improve future exhibitions.
-          </p>
-          <Link 
-            to="/"
-            className="inline-block bg-navy-600 text-white px-6 py-2 rounded-lg hover:bg-navy-700 transition-colors"
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center max-w-md mx-auto"
           >
-            Back to Home
-          </Link>
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              Thank You!
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Your feedback has been submitted successfully. We appreciate your input!
+            </p>
+            <button
+              onClick={() => {
+                setIsSubmitted(false);
+                setFormData({
+                  name: '',
+                  email: '',
+                  rating: 5,
+                  category: 'general',
+                  message: '',
+                  phone: ''
+                });
+              }}
+              className="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
+            >
+              Submit Another Feedback
+            </button>
+          </motion.div>
         </div>
-      </motion.div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-navy-50 to-navy-100 p-4">
-      <Link to="/" className="inline-flex items-center text-navy-600 mb-6">
-        <ArrowLeft className="w-5 h-5 mr-2" />
-        Back to Home
-      </Link>
-
-      <motion.div
-        className="max-w-2xl mx-auto bg-white rounded-xl p-6 shadow-lg"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <MessageSquare className="w-8 h-8 text-navy-600" />
-          <h1 className="text-2xl font-bold text-navy-800">Visitor Feedback</h1>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-6 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">Name</label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              />
+    <Layout 
+      title="Visitor Feedback"
+      subtitle="Share your experience and help us improve future exhibitions"
+      backgroundGradient="from-purple-50 via-pink-50 to-red-50 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900"
+    >
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/80 dark:bg-dark-800/80 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-dark-700"
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Personal Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="Your full name"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="your.email@example.com"
+                />
+              </div>
             </div>
 
+            {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">Gender</label>
-              <select
-                required
-                value={formData.gender}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">Email</label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">Mobile</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Phone Number
+              </label>
               <input
                 type="tel"
-                required
-                value={formData.mobile}
-                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="+91 XXXXX XXXXX"
               />
             </div>
 
+            {/* Rating */}
             <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">District</label>
-              <select
-                required
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              >
-                <option value="">Select District</option>
-                {districts.map(district => (
-                  <option key={district} value={district}>{district}</option>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Overall Rating *
+              </label>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, rating: star })}
+                    className="focus:outline-none"
+                  >
+                    <Star
+                      className={`w-8 h-8 transition-colors ${
+                        star <= formData.rating
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300 dark:text-gray-600'
+                      }`}
+                    />
+                  </button>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1">Area of Interest</label>
-              <select
-                required
-                value={formData.areaOfInterest}
-                onChange={(e) => setFormData({ ...formData, areaOfInterest: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              >
-                <option value="">Select Area</option>
-                {areasOfInterest.map(area => (
-                  <option key={area} value={area}>{area}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-navy-800 mb-4">Survey Questions</h2>
-            {surveyQuestions.map((question, index) => (
-              <div key={index} className="mb-4">
-                <p className="text-navy-700 mb-2">{question}</p>
-                <div className="flex gap-4">
-                  {['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'].map((rating) => (
-                    <label key={rating} className="flex items-center">
-                      <input
-                        type="radio"
-                        name={`question-${index}`}
-                        value={rating}
-                        required
-                        className="mr-1"
-                      />
-                      <span className="text-sm text-navy-600">{rating}</span>
-                    </label>
-                  ))}
-                </div>
+                <span className="ml-3 text-sm text-gray-600 dark:text-gray-400">
+                  {formData.rating} out of 5 stars
+                </span>
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-navy-700 mb-1">
-              Additional Feedback (Optional)
-            </label>
-            <textarea
-              value={formData.additionalFeedback}
-              onChange={(e) => setFormData({ ...formData, additionalFeedback: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-              rows={4}
-            />
-          </div>
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Feedback Category *
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <button
+                      key={category.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, category: category.value })}
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        formData.category === category.value
+                          ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
+                          : 'border-gray-200 dark:border-dark-600 hover:border-gray-300 dark:hover:border-dark-500'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5 mb-2" />
+                      <span className="text-sm font-medium">{category.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-navy-600 text-white py-3 rounded-lg font-semibold hover:bg-navy-700 transition-colors"
-          >
-            Submit Feedback
-          </button>
-        </form>
-      </motion.div>
-    </div>
+            {/* Message */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Your Feedback *
+              </label>
+              <textarea
+                required
+                rows={6}
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+                placeholder="Please share your thoughts, suggestions, or experiences..."
+              />
+            </div>
+
+            {/* Submit Button */}
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-medium py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                />
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Submit Feedback
+                </>
+              )}
+            </motion.button>
+          </form>
+        </motion.div>
+
+        {/* Additional Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-8 text-center"
+        >
+          <p className="text-gray-600 dark:text-gray-300 text-sm">
+            Your feedback is valuable to us and helps improve the exhibition experience for all visitors.
+          </p>
+        </motion.div>
+      </div>
+    </Layout>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Utensils, MapPin, Star, Heart, Clock, Filter } from 'lucide-react';
+import { Layout } from '../components/common/Layout';
 import { getFoods, type Food } from '../services/foodService';
 
 // Image Carousel component
@@ -19,33 +19,37 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
   if (!images.length) return null;
 
   return (
-    <div className="relative w-full h-48 mb-4">
-      <img
+    <div className="relative w-full h-48 mb-4 overflow-hidden rounded-xl">
+      <motion.img
+        key={currentIndex}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
         src={images[currentIndex]}
         alt="Food item"
-        className="w-full h-full object-cover rounded-lg"
+        className="w-full h-full object-cover"
       />
       {images.length > 1 && (
         <>
           <button
             onClick={previousImage}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={nextImage}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
+          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full ${
-                  index === currentIndex ? 'bg-white' : 'bg-white/50'
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === currentIndex ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/75'
                 }`}
               />
             ))}
@@ -58,14 +62,18 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
 
 export const Foods = () => {
   const [foods, setFoods] = useState<Food[]>([]);
+  const [filteredFoods, setFilteredFoods] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [priceRange, setPriceRange] = useState<string>('All');
 
   useEffect(() => {
     const fetchFoods = async () => {
       try {
         const fetchedFoods = await getFoods();
         setFoods(fetchedFoods);
+        setFilteredFoods(fetchedFoods);
       } catch (err) {
         setError('Failed to load foods');
         console.error('Error fetching foods:', err);
@@ -77,58 +85,256 @@ export const Foods = () => {
     fetchFoods();
   }, []);
 
+  const filterFoods = () => {
+    let filtered = [...foods];
+
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(food => {
+        if (selectedCategory === 'Traditional' && food.category === 'Traditional') return true;
+        if (selectedCategory === 'Sweets' && food.category === 'Sweets') return true;
+        if (selectedCategory === 'Snacks' && food.category === 'Snacks') return true;
+        if (selectedCategory === 'Beverages' && food.category === 'Beverages') return true;
+        if (selectedCategory === 'Main Course' && food.category === 'Main Course') return true;
+        return false;
+      });
+    }
+
+    if (priceRange !== 'All') {
+      filtered = filtered.filter(food => {
+        const price = parseFloat(food.price.replace('₹', ''));
+        if (priceRange === 'Under ₹50' && price < 50) return true;
+        if (priceRange === '₹50-₹100' && price >= 50 && price <= 100) return true;
+        if (priceRange === '₹100-₹200' && price >= 100 && price <= 200) return true;
+        if (priceRange === 'Above ₹200' && price > 200) return true;
+        return false;
+      });
+    }
+
+    setFilteredFoods(filtered);
+  };
+
+  useEffect(() => {
+    filterFoods();
+  }, [foods, selectedCategory, priceRange]);
+
+  const categories = ['All', 'Traditional', 'Sweets', 'Snacks', 'Beverages', 'Main Course'];
+  const priceRanges = ['All', 'Under ₹50', '₹50-₹100', '₹100-₹200', 'Above ₹200'];
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4">
-        <div className="text-center py-4">Loading foods...</div>
-      </div>
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full"
+          />
+        </div>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4">
-        <div className="text-red-600 py-4">{error}</div>
-      </div>
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <Utensils className="w-8 h-8 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">
+              {error}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Please try again later
+            </p>
+          </div>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4">
-      <Link to="/" className="inline-flex items-center text-orange-600 mb-6">
-        <ArrowLeft className="w-5 h-5 mr-2" />
-        Back to Home
-      </Link>
-
-      <motion.h1 
-        className="text-3xl font-bold text-orange-800 mb-8"
+    <Layout 
+      title="Food & Cuisine"
+      subtitle="Experience the rich flavors of traditional Odia food and local delicacies"
+      backgroundGradient="from-orange-50 via-yellow-50 to-red-50 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900"
+    >
+      {/* Enhanced Header with Filters */}
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="bg-white/80 dark:bg-dark-800/80 backdrop-blur-md rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-dark-700"
       >
-        Best Foods Available
-      </motion.h1>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Filter className="w-5 h-5 text-orange-600" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filters:</span>
+            </div>
+            
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-2 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-orange-500"
+            >
+              {categories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+            
+            <select
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+              className="px-4 py-2 bg-gray-50 dark:bg-dark-700 border border-gray-200 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-orange-500"
+            >
+              {priceRanges.map(range => (
+                <option key={range} value={range}>{range}</option>
+              ))}
+            </select>
+          </div>
 
-      <div className="grid gap-6 max-w-2xl mx-auto">
-        {foods.map((food, index) => (
+          {/* Stats */}
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex items-center gap-1">
+              <Utensils className="w-4 h-4" />
+              <span>{filteredFoods.length} items available</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              <span>Fresh daily</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Foods Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredFoods.map((food, index) => (
           <motion.div
             key={food.id}
-            className="bg-white rounded-xl p-6 shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            className="group bg-white dark:bg-dark-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-dark-700"
           >
+            {/* Image Carousel */}
             {food.images && food.images.length > 0 && (
               <ImageCarousel images={food.images} />
             )}
-            <div className="flex justify-between items-start mb-2">
-              <h2 className="text-xl font-semibold text-orange-800">{food.name}</h2>
-              <span className="text-orange-600 font-medium">{food.price}</span>
+            
+            {/* Content */}
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                  {food.name}
+                </h3>
+                <div className="flex items-center gap-1">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="p-2 bg-gray-100 dark:bg-dark-700 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                  >
+                    <Heart className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                  {food.price}
+                </span>
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <span className="text-sm text-gray-600 dark:text-gray-300">4.8</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                {food.description}
+              </p>
+
+              {/* Location */}
+              <div className="flex items-center gap-2 mb-4 text-sm text-gray-500 dark:text-gray-400">
+                <MapPin className="w-4 h-4" />
+                <span>{food.location}</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Utensils className="w-4 h-4" />
+                  Order Now
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-3 border-2 border-orange-500 text-orange-600 dark:text-orange-400 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200"
+                >
+                  <Star className="w-4 h-4" />
+                </motion.button>
+              </div>
             </div>
-            <p className="text-gray-600 mb-2">{food.description}</p>
-            <p className="text-sm text-orange-600">{food.location}</p>
           </motion.div>
         ))}
       </div>
-    </div>
+
+      {/* Empty State */}
+      {filteredFoods.length === 0 && !loading && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-16"
+        >
+          <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-700 dark:to-dark-600 rounded-full flex items-center justify-center">
+            <Utensils className="w-12 h-12 text-gray-400 dark:text-gray-500" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+            No food items found
+          </h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            Try adjusting your filters or check back later for more options
+          </p>
+          <button
+            onClick={() => {
+              setSelectedCategory('All');
+              setPriceRange('All');
+            }}
+            className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
+          >
+            Clear Filters
+          </button>
+        </motion.div>
+
+      {/* Special Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="mt-12 bg-gradient-to-r from-orange-500 to-red-600 dark:from-orange-600 dark:to-red-700 text-white rounded-2xl p-8 text-center"
+      >
+        <h3 className="text-2xl font-bold mb-4">
+          Taste the Authentic Flavors of Odisha
+        </h3>
+        <p className="text-lg opacity-90 mb-6">
+          From traditional Pakhala to delicious Rasgulla, experience the culinary heritage
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors"
+        >
+          Explore Food Map
+        </motion.button>
+      </motion.div>
+    </Layout>
   );
 };
