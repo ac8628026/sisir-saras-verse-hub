@@ -31,18 +31,18 @@ export const Layout = ({
       <div className="pt-16">
         {showMarquee && <MarqueeBanner />}
         
-        <div className={`container mx-auto px-4 py-6 ${className}`}>
+        <div className={`container mx-auto px-4 py-4 sm:py-6 ${className}`}>
           {title && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-8"
+              className="text-center mb-6 sm:mb-8"
             >
-              <h1 className="text-4xl md:text-6xl font-bold text-navy-800 dark:text-white mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-navy-800 dark:text-white mb-3 sm:mb-4">
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-xl text-navy-600 dark:text-gray-300 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-navy-600 dark:text-gray-300 max-w-2xl mx-auto px-4">
                   {subtitle}
                 </p>
               )}
