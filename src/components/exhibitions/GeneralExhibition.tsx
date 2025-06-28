@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Package, Utensils, MessageSquare, Users, BarChart3, Sparkles, ArrowRight, MapPin, Clock, Info } from 'lucide-react';
-import { FeatureCard } from '../FeatureCard';
+import { Sparkles, ArrowRight, MapPin, Clock, Info } from 'lucide-react';
 
 interface ExhibitionConfig {
   title: string;
@@ -11,7 +10,7 @@ interface ExhibitionConfig {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
-  features: Array<{
+  features?: Array<{
     icon: any;
     title: string;
     description: string;
@@ -27,59 +26,12 @@ interface GeneralExhibitionProps {
   config: ExhibitionConfig;
 }
 
-const defaultFeatures = [
-  {
-    icon: Package,
-    title: 'Product Showcase',
-    description: 'Discover authentic products and traditional items.',
-    to: '/products',
-    color: 'from-blue-500 to-blue-600'
-  },
-  {
-    icon: Calendar,
-    title: 'Event Schedule',
-    description: 'Stay updated with programs, workshops, and special events.',
-    to: '/schedule',
-    color: 'from-green-500 to-green-600'
-  },
-  {
-    icon: Utensils,
-    title: 'Food & Cuisine',
-    description: 'Experience traditional food and local delicacies.',
-    to: '/foods',
-    color: 'from-purple-500 to-purple-600'
-  },
-  {
-    icon: MessageSquare,
-    title: 'Visitor Feedback',
-    description: 'Share your experience and help us improve.',
-    to: '/feedback',
-    color: 'from-red-500 to-red-600'
-  },
-  {
-    icon: Users,
-    title: 'Administration',
-    description: 'Administrative panel for exhibition management.',
-    to: '/administrator',
-    color: 'from-gray-500 to-gray-600'
-  },
-  {
-    icon: BarChart3,
-    title: 'Data Analytics',
-    description: 'View detailed analytics and insights.',
-    to: '/data',
-    color: 'from-yellow-500 to-yellow-600'
-  }
-];
-
 export const GeneralExhibition = ({ config }: GeneralExhibitionProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  const features = config.features || defaultFeatures;
 
   return (
     <div className={`min-h-screen ${config.backgroundColor} transition-colors duration-300 overflow-x-hidden`}>
@@ -179,61 +131,27 @@ export const GeneralExhibition = ({ config }: GeneralExhibitionProps) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-12">
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                  <Package className="w-6 h-6 text-white" />
+                  <Sparkles className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Quality Products</h3>
+                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Premium Collection</h3>
                 <p className="text-gray-600 dark:text-gray-300">Carefully curated collection of premium items</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-white" />
+                  <Clock className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Regular Events</h3>
                 <p className="text-gray-600 dark:text-gray-300">Engaging programs and workshops for all ages</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-white" />
+                  <MapPin className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Community Focus</h3>
-                <p className="text-gray-600 dark:text-gray-300">Building connections through shared experiences</p>
+                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Prime Location</h3>
+                <p className="text-gray-600 dark:text-gray-300">Easily accessible venue with modern facilities</p>
               </div>
             </div>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="w-full px-4 py-16 sm:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-center mb-12 sm:mb-16"
-        >
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-6 sm:mb-8 rounded-full flex items-center justify-center"
-            style={{
-              background: `linear-gradient(135deg, ${config.primaryColor}, ${config.secondaryColor})`
-            }}
-          >
-            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-          </motion.div>
-          
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6 px-2">
-            Explore Our Sections
-          </h2>
-          <p className="text-base sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4">
-            Navigate through different areas of our exhibition to discover everything we have to offer
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} index={index} />
-          ))}
         </div>
       </div>
 
