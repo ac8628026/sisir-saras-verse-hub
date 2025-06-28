@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Settings, Package, Calendar, Utensils, Percent, MessageSquare, Image } from 'lucide-react';
 import { Tabs } from '../common/Tabs';
@@ -15,6 +14,7 @@ import { collection, getDocs, limit, query } from 'firebase/firestore';
 export const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('settings');
 
   useEffect(() => {
     const checkFirebaseConnection = async () => {
@@ -61,7 +61,11 @@ export const AdminDashboard = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6">
       <h1 className="text-2xl font-bold mb-6">Administrator Dashboard</h1>
-      <Tabs tabs={tabs} />
+      <Tabs 
+        tabs={tabs} 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+      />
     </div>
   );
 };
