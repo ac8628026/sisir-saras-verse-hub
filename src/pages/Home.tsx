@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Building2 } from 'lucide-react';
 import { OrmasExhibition } from '../components/exhibitions/OrmasExhibition';
+import { SampleExhibition } from '../components/exhibitions/SampleExhibition';
 
 interface Exhibition {
   id: string;
@@ -13,12 +14,17 @@ interface Exhibition {
 
 const exhibitions: Exhibition[] = [
   {
+    id: 'general',
+    name: 'General Exhibition',
+    description: 'A Modern Exhibition Experience',
+    component: SampleExhibition,
+  },
+  {
     id: 'ormas',
     name: 'ORMAS Exhibition',
     description: 'Celebrating Odisha\'s Heritage',
     component: OrmasExhibition,
   },
-  // Add more exhibitions here as they become available
 ];
 
 export const Home = () => {

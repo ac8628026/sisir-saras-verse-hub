@@ -18,6 +18,19 @@ export const getAvailableExhibitions = async (): Promise<ExhibitionInfo[]> => {
   // For now, return static data. In the future, this would make an API call
   return [
     {
+      id: 'general',
+      name: 'General Exhibition',
+      description: 'A Modern Exhibition Experience',
+      isActive: true,
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-12-31'),
+      theme: {
+        primaryColor: '#3B82F6',
+        secondaryColor: '#8B5CF6', 
+        backgroundGradient: 'from-blue-50 to-purple-100'
+      }
+    },
+    {
       id: 'ormas',
       name: 'ORMAS Exhibition',
       description: 'Celebrating Odisha\'s Heritage',
