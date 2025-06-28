@@ -1,5 +1,5 @@
+
 import { useState, useEffect } from 'react';
-import { Settings, Package, Calendar, Utensils, Percent, MessageSquare, Image } from 'lucide-react';
 import { Tabs } from '../common/Tabs';
 import { ProductManager } from './ProductManager';
 import { ScheduleManager } from './ScheduleManager';
@@ -14,7 +14,6 @@ import { collection, getDocs, limit, query } from 'firebase/firestore';
 export const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('settings');
 
   useEffect(() => {
     const checkFirebaseConnection = async () => {
@@ -33,13 +32,13 @@ export const AdminDashboard = () => {
   }, []);
 
   const tabs = [
-    { id: 'settings', label: 'Settings', icon: Settings, component: SettingsManager },
-    { id: 'products', label: 'Products', icon: Package, component: ProductManager },
-    { id: 'schedule', label: 'Schedule', icon: Calendar, component: ScheduleManager },
-    { id: 'foods', label: 'Foods', icon: Utensils, component: FoodManager },
-    { id: 'exhibition-photos', label: 'Exhibition Photos', icon: Image, component: ExhibitionManager },
-    { id: 'discounts', label: 'Discounts', icon: Percent, component: DiscountManager },
-    { id: 'feedback', label: 'Feedback Data', icon: MessageSquare, component: FeedbackViewer }
+    { id: 'settings', label: 'Settings', component: SettingsManager },
+    { id: 'products', label: 'Products', component: ProductManager },
+    { id: 'schedule', label: 'Schedule', component: ScheduleManager },
+    { id: 'foods', label: 'Foods', component: FoodManager },
+    { id: 'exhibition-photos', label: 'Exhibition Photos', component: ExhibitionManager },
+    { id: 'discounts', label: 'Discounts', component: DiscountManager },
+    { id: 'feedback', label: 'Feedback Data', component: FeedbackViewer }
   ];
 
   if (isLoading) {
@@ -61,11 +60,7 @@ export const AdminDashboard = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6">
       <h1 className="text-2xl font-bold mb-6">Administrator Dashboard</h1>
-      <Tabs 
-        tabs={tabs} 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab} 
-      />
+      <Tabs tabs={tabs} />
     </div>
   );
 };
