@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Settings, Package, Calendar, Utensils, Percent, MessageSquare, Image } from 'lucide-react';
 import { Tabs } from '../common/Tabs';
 import { ProductManager } from './ProductManager';
 import { ScheduleManager } from './ScheduleManager';
@@ -32,13 +33,13 @@ export const AdminDashboard = () => {
   }, []);
 
   const tabs = [
-    { id: 'settings', label: 'Settings', component: SettingsManager },
-    { id: 'products', label: 'Products', component: ProductManager },
-    { id: 'schedule', label: 'Schedule', component: ScheduleManager },
-    { id: 'foods', label: 'Foods', component: FoodManager },
-    { id: 'exhibition-photos', label: 'Exhibition Photos', component: ExhibitionManager },
-    { id: 'discounts', label: 'Discounts', component: DiscountManager },
-    { id: 'feedback', label: 'Feedback Data', component: FeedbackViewer }
+    { id: 'settings', label: 'Settings', icon: Settings, component: SettingsManager },
+    { id: 'products', label: 'Products', icon: Package, component: ProductManager },
+    { id: 'schedule', label: 'Schedule', icon: Calendar, component: ScheduleManager },
+    { id: 'foods', label: 'Foods', icon: Utensils, component: FoodManager },
+    { id: 'exhibition-photos', label: 'Exhibition Photos', icon: Image, component: ExhibitionManager },
+    { id: 'discounts', label: 'Discounts', icon: Percent, component: DiscountManager },
+    { id: 'feedback', label: 'Feedback Data', icon: MessageSquare, component: FeedbackViewer }
   ];
 
   if (isLoading) {
