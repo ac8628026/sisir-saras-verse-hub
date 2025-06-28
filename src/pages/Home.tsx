@@ -93,7 +93,7 @@ export const Home = () => {
                       <div className="text-xs opacity-70 mt-1">{exhibition.description}</div>
                     </button>
                   ))}
-                </div>
+                </motion.div>
               )}
             </div>
           </motion.div>
