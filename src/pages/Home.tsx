@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Building2, Sparkles } from 'lucide-react';
-import { Layout } from '../components/common/Layout';
+import { ChevronDown, Building2 } from 'lucide-react';
 import { OrmasExhibition } from '../components/exhibitions/OrmasExhibition';
 
 interface Exhibition {
